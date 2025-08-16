@@ -36,6 +36,14 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
+import Link from 'next/link';
+
+interface NotionBlock {
+  id: string;
+  type: string;
+  [key: string]: unknown;
+}
+
 export default async function PostPage({ params }: PageProps) {
   const result = await getPostBySlug(params.slug);
 
@@ -108,12 +116,12 @@ export default async function PostPage({ params }: PageProps) {
       {/* 記事フッター */}
       <footer className="mt-12 pt-8 border-t border-gray-200">
         <div className="flex justify-between items-center">
-          <a
+          <Link
             href="/"
             className="text-blue-600 hover:text-blue-800 font-medium"
           >
             ← 記事一覧に戻る
-          </a>
+          </Link>
           
           <div className="text-sm text-gray-500">
             この記事は{post.tags.length > 0 ? post.tags.join(', ') : '未分類'}に関する内容です
