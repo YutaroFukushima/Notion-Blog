@@ -15,8 +15,7 @@ export default async function HomePage() {
           Welcome to My Blog
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Notionで管理している記事をNext.jsで表示しています。
-          技術記事や日々の学びを共有していきます。
+          日々の出来事をアウトプットしていきます。
         </p>
       </section>
 
