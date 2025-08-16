@@ -23,16 +23,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'npm'
+          # cache: 'npm' を削除
           
-      # npm ciの代わりにnpm installを使用
       - name: Install dependencies
-        run: |
-          npm install
-          
-      - name: Build Next.js app
-        run: |
-          npm run build
+        run: npm install
           
       - name: Build And Deploy
         id: builddeploy
@@ -44,7 +38,7 @@ jobs:
           app_location: "/"
           api_location: ""
           output_location: "out"
-          skip_app_build: true  # ビルドは上のステップで実行済み
+          app_build_command: "npm run build"
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
