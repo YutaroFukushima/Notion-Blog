@@ -1,15 +1,20 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { getPostBySlug, getAllPublishedSlugs } from '@/lib/notion';
 import NotionBlock from '@/components/NotionBlock';
+import { BlockObjectResponse, PartialBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 // ISR: 24時間ごとに再検証
 export const revalidate = 86400;
 
-// 動的ルートのパラメータ型
+// Notionブロックの型定義（Notion APIの型を使用）
+type NotionBlockType = BlockObjectResponse | PartialBlockObjectResponse;
+
+// Next.js 15対応: paramsはPromise型
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // ビルド時に生成する記事のパスを指定
@@ -22,7 +27,9 @@ export async function generateStaticParams() {
 
 // メタデータの生成
 export async function generateMetadata({ params }: PageProps) {
-  const result = await getPostBySlug(params.slug);
+  // Next.js 15: paramsを await で解決
+  const { slug } = await params;
+  const result = await getPostBySlug(slug);
   
   if (!result) {
     return {
@@ -36,16 +43,10 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-import Link from 'next/link';
-
-interface NotionBlock {
-  id: string;
-  type: string;
-  [key: string]: unknown;
-}
-
 export default async function PostPage({ params }: PageProps) {
-  const result = await getPostBySlug(params.slug);
+  // Next.js 15: paramsを await で解決
+  const { slug } = await params;
+  const result = await getPostBySlug(slug);
 
   if (!result) {
     notFound();
@@ -107,7 +108,7 @@ export default async function PostPage({ params }: PageProps) {
       {/* 記事本文 */}
       <div className="prose prose-lg max-w-none">
         <div className="bg-white rounded-lg shadow-sm p-8">
-          {blocks.map((block: any) => (
+          {blocks.map((block: NotionBlockType) => (
             <NotionBlock key={block.id} block={block} />
           ))}
         </div>
