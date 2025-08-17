@@ -45,8 +45,16 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-          # 環境を識別するための環境変数
-          NEXT_PUBLIC_ENV: ${{ github.ref == 'refs/heads/develop' && 'preview' || github.ref == 'refs/heads/main' && 'production' || 'development' }}
+          # Azure Portal表示名
+          deployment_environment: ${{ 
+            github.ref == 'refs/heads/main' && 'Production' ||
+            github.ref == 'refs/heads/develop' && 'Staging' ||
+            github.ref == 'refs/heads/test' && 'Testing' || 'Development'}}
+          # アプリ内環境変数
+          NEXT_PUBLIC_ENV: ${{
+            github.ref == 'refs/heads/develop' && 'preview' || 
+            github.ref == 'refs/heads/main' && 'production' || 
+            'development' }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
